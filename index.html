@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Shop</title>
+  <style>
+      * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #0a0a23;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 1.5rem;
+    }
+    #topbar-items {
+      display: none;
+    }
+    #topbar-items a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+      width: 100%;
+    }
+    #topbar-items a:hover {
+      color: #ff9900;
+    }
+    #cart-container {
+      position: relative;
+      float: right;
+      margin-right: 2rem;
+    }
+    #cart-icon {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+    }
+    #cart-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 2.5rem;
+      background: #fff;
+      color: black;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 1rem;
+      min-width: 300px;
+      z-index: 1001;
+    }
+    #cart-dropdown ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #cart-dropdown li {
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #cart-total {
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: right;
+      color: #0a0a23;
+    }
+    #checkout-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #0a0a23;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .payment-options {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    
+    }
+    .payment-options label {
+      margin-right: 1rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .hero {
+      background: url('Chocolate-timberlands.jpg') no-repeat center center/cover;
+      height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 0 1rem;
+    }
+    .hero h2 {
+      font-size: 3rem;
+      background: rgba(0,0,0,0.6);
+      padding: 1rem;
+      border-radius: 10px;
+      animation: fadeDown 1.5s ease;
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .products {
+      padding: 1rem;
+      margin: 10px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: 10px;
+      width: 22%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      animation: fadeUp 2s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+@media (max-width: 768px) {
+      .products {
+        flex-direction: column;
+      }
+      .product-card {
+        width: 100%;
+      }
+      #topbar-items {
+        display: none;
+      }
+      #topbar-items.active {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+      }
+}
+
+@media (min-width: 768px) {
+      #topbartoggle {
+        display: none;
+      }
+      #topbar-items {
+        display: flex;
+        gap: 1rem;
+        flex-direction: row;
+        width: auto;
+      }
+}
+
+.product-card:hover {
+      transform: translateY(-5px);
+    }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .product-info {
+      padding: 1rem;
+    }
+    .product-info h3 {
+      margin-bottom: 0.5rem;
+    }
+    .product-info p {
+      color: #777;
+      font-size: 0.9rem;
+    }
+    .price {
+      color: #0a0a23;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+    .add-cart-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #ff9900;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .add-cart-btn:hover {
+      background: #e68a00;
+    }
+    .remove-cart-btn {
+      background: none;
+      border: none;
+      color: #e00;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    footer {
+      background: #0a0a23;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    #topbartoggle {
+      position: fixed;
+      top: 0;
+      right: 2px;
+      font-size: 30px;
+      color: white;
+      background:#0a0a23;
+      border-radius: 10px;
+      border: 2px solid white;
+      width: 40px;
+    }
+    #topbartoggle:hover {
+      background: #4d4c4c;
+      transform: scale(1.05);
+    }
+
+ .modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center; align-items: center;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+
+  .modal-content h2 {
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+  }
+
+  .modal-content input, .modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: #27ae60;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .submit-btn:hover {
+    background: #219150;
+  }
+
+  .close {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  .product-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .product-cards {
+    width: 200px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  .product-cards img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  .open-modal-btn {
+    background: #2980b9;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    margin: 15px;
+    cursor: pointer;
+  }
+
+  .open-modal-btn:hover {
+    background: #1c5d87;
+  }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Shon Sneakers Ug</h1>
+    <nav>
+      <div id="topbar-items">
+        <a href="#">Home</a>
+        <a href="#products">Products</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+    <div id="cart-container">
+      <!-- Button to open modal -->
+<button id="openModalBtn" class="open-modal-btn">Add New Product</button>
+
+<!-- Modal Structure -->
+<div id="productModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Add New Product</h2>
+    <form id="productForm">
+      <input type="text" id="productName" placeholder="Product Name" required />
+      <textarea id="productDesc" placeholder="Product Description" required></textarea>
+      <input type="number" id="productPrice" placeholder="Price" required />
+      <input type="file" id="productImage" accept="image/*" />
+      <button type="submit" class="submit-btn">Upload Product</button>
+    </form>
+  </div>
+</div>
+      <button id="cart-icon">
+        🛒 <span id="cart-count">0</span>
+      </button>
+      <div id="cart-dropdown">
+        <h3 style="text-align:center; border-bottom: 1px solid black;">Your Cart</h3>
+        <ul id="cart-items"></ul>
+        <div id="cart-total"></div>
+        <div class="payment-options"><ul>
+          <li><label><input type="radio" name="payment" value="delivery" checked> Pay on Delivery</label></li>
+          <li><label><input type="radio" name="payment" value="mobile"> MTN Mobile Money</label></li>
+          <li><label><input type="radio" name="payment" value="mobile">Airtel Mobile Money</label></li>
+          <li><label><input type="radio" name="payment" value="card"> Credit/Debit Card</label></li>
+        </ul>
+        </div>
+        <button id="checkout-btn">Checkout</button>
+      </div>
+    </div>
+    <button id="topbartoggle">&#8801;</button>
+  </header>
+
+  <section class="hero">
+    <h2>Discover your favourite sneaker.</h2>
+  </section>
+
+  <section class="products" id="products">
+    <div class="product-card">
+      <img src="IMG-20241210-WA0151.jpg" alt="Product 1">
+      <div class="product-info">
+        <h3>Casual Sneakers</h3>
+        <p>Comfortable and stylish everyday wear.</p>
+        <p class="price">UGX 90,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <img src="airforceb.jpg" alt="Product 2">
+      <div class="product-info">
+        <h3>Airforce-Stylish</h3>
+        <p>Scarce, modern, new look and very comfortable.</p>
+        <p class="price">UGX 120,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+      
+    </div>
+    <div class="product-card">
+      <img src="force2.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Jordan-1</h3>
+        <p>New color and stylish threads and very comfortable</p>
+        <p class="price">UGX 150,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <img src="airforce1.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Airforce</h3>
+        <p>Stylish look with comfortable inner carpet.</p>
+        <p class="price">UGX 150,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div> 
+    </div> 
+    <div class="product-card">
+      <img src="jordan9.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>jordan-9</h3>
+        <p>high quality leather and water proof.</p>
+        <p class="price">UGX 200,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>  
+    </div>
+    <div class="product-card">
+      <img src="dior.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Dior-2</h3>
+        <p>Modern design and comfortable.</p>
+        <p class="price">UGX 100,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <img src="redshoe.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>jordan-7</h3>
+        <p>Modern design and comfortable.</p>
+        <p class="price">UGX 150,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+    <div class="product-card">
+      <img src="dior-1.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Dior-1</h3>
+        <p>Modern design and comfortable.</p>
+        <p class="price">UGX 150,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+   <div class="product-card">
+      <img src="Black-timberlands.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Black-timberlands</h3>
+        <p>Modern American design and comfortable.</p>
+        <p class="price">UGX 180,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Chocolate-timberlands.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Chocolate-timberlands</h3>
+        <p>Modern American design and comfortable.</p>
+        <p class="price">UGX 180,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Brown-Timberland.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Brown-timberlands</h3>
+        <p>Modern design and comfortable.</p>
+        <p class="price">UGX 180,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="cowies-brown.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Brown-cowies</h3>
+        <p>Gental and stylish.</p>
+        <p class="price">UGX 120,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Grey-oxfords.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Grey-oxfords</h3>
+        <p>Stylish design and comfortable.</p>
+        <p class="price">UGX 140,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Green-oxfords.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Oxfords</h3>
+        <p>New look same style.</p>
+        <p class="price">UGX 100,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Black-oxfords.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Black-oxfords</h3>
+        <p>Very rare, stylish and comfrotable.</p>
+        <p class="price">UGX 150,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Brown-oxfords.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Brown-oxfords</h3>
+        <p>Very stylish and brilliant.</p>
+        <p class="price">UGX 150,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Plain-black-Dapadans.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Plain-black-dapadans</h3>
+        <p>Trending and comfortable.</p>
+        <p class="price">UGX 70,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Gucci-dapadans.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Gucci-dapdans</h3>
+        <p>Good for outdoor and very stylish.</p>
+        <p class="price">UGX 75,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Striped-nike-dapadans.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Striped-Nike-dapadans</h3>
+        <p>Good looking, classic & stylish look.</p>
+        <p class="price">UGX 50,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+     <div class="product-card">
+      <img src="Home-flappies.jpg" alt="Product 3">
+      <div class="product-info">
+        <h3>Home-flappies</h3>
+        <p>Cool design and gental look..</p>
+        <p class="price">UGX 50,000</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    </div>
+    
+
+</section>
+
+  <footer id="contact">
+    <p>&copy; 2025 ShonSneakers. All rights reserved.</p>
+    <p>Contact us: info@shonsneakers.com | +256 745 652 778</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById('topbartoggle');
+      const items = document.getElementById('topbar-items');
+
+      const handleResize = () => {
+        if (window.innerWidth >= 768) {
+          items.classList.add('active');
+          items.style.display = 'flex';
+        } else {
+          items.classList.remove('active');
+          items.style.display = 'none';
+        }
+      };
+
+      btn.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          items.classList.toggle('active');
+          items.style.display = items.classList.contains('active') ? 'flex' : 'none';
+        }
+      });
+
+      window.addEventListener('resize', handleResize);
+      handleResize();
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Cart logic
+    const cart = [];
+    const cartCount = document.getElementById('cart-count');
+    const cartDropdown = document.getElementById('cart-dropdown');
+    const cartIcon = document.getElementById('cart-icon');
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    // Parse price
+    function parsePrice(priceStr) {
+      return Number(priceStr.replace(/[^\d]/g, ''));
+    }
+
+    function updateCartCount() {
+      cartCount.innerText = cart.length;
+    }
+
+    function renderCart() {
+      cartItems.innerHTML = '';
+      let total = 0;
+      cart.forEach((item, idx) => {
+        total += parsePrice(item.price);
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${item.name} - ${item.price}</span>
+          <button class="remove-cart-btn" data-idx="${idx}" title="Remove">&times;</button>
+        `;
+        cartItems.appendChild(li);
+      });
+      cartTotal.innerText = 'Total: UGX ' + total.toLocaleString();
+      updateCartCount();
+
+      document.querySelectorAll('.remove-cart-btn').forEach(btn => {
+        btn.onclick = function () {
+          cart.splice(btn.dataset.idx, 1);
+          renderCart();
+        };
+      });
+    }
+
+  document.querySelectorAll('.add-cart-btn').forEach((btn) => {
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    const card = btn.closest('.product-card');
+    const name = card.querySelector('h3').innerText;
+    const price = card.querySelector('.price').innerText;
+
+    // Prevent adding the same item multiple times
+    const alreadyInCart = cart.some(item => item.name === name && item.price === price);
+    if (alreadyInCart) return;
+
+    cart.push({ name, price });
+    renderCart();
+
+    // Change button text and disable it
+    btn.textContent = 'Remove from Cart';
+    btn.disabled = false;
+    btn.style.background = '#aaa'; // Optional: change style
+    btn.style.cursor = 'allowed';
+
+  });
+});
+
+
+    cartIcon.addEventListener('click', () => {
+      cartDropdown.style.display = cartDropdown.style.display === 'none' || cartDropdown.style.display === '' ? 'block' : 'none';
+      renderCart();
+    });
+
+    // Hide cart when clicking outside
+    document.addEventListener('click', (e) => {
+      const isCartClick = e.target.closest('#cart-container');
+      if (!isCartClick) {
+        cartDropdown.style.display = 'none';
+      }
+    });
+
+    checkoutBtn.addEventListener('click', () => {
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
+
+      const paymentType = document.querySelector('input[name="payment"]:checked').value;
+      let paymentMsg = '';
+      if (paymentType === 'delivery') {
+        paymentMsg = 'You chose Pay on Delivery. Your order will be processed and delivered to you.';
+      } else if (paymentType === 'mobile') {
+        paymentMsg = 'You chose Mobile Money. You will receive payment instructions shortly.';
+      } else if (paymentType === 'card') {
+        paymentMsg = 'You chose Credit/Debit Card. You will be redirected for payment.';
+      }
+
+      fetch('http://localhost:3000/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart, paymentType })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message + '\n' + paymentMsg);
+        cart.length = 0;
+        renderCart();
+        cartDropdown.style.display = 'none';
+      })
+      .catch(() => alert('Checkout failed!'));
+    });
+
+ const modal = document.getElementById("productModal");
+const openBtn = document.getElementById("openModalBtn");
+const closeBtn = document.querySelector(".close");
+const form = document.getElementById("productForm");
+const productsSection = document.querySelector(".products"); // Use the main products section
+
+openBtn.onclick = () => modal.style.display = "flex";
+closeBtn.onclick = () => modal.style.display = "none";
+window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("productName").value;
+  const desc = document.getElementById("productDesc").value;
+  const price = document.getElementById("productPrice").value;
+  const imageFile = document.getElementById("productImage").files[0];
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const productCard = document.createElement("div");
+    productCard.className = "product-card";
+    productCard.innerHTML = `
+      <img src="${e.target.result}" alt="${name}" />
+      <div class="product-info">
+        <h3>${name}</h3>
+        <p>${desc}</p>
+        <p class="price">UGX ${Number(price).toLocaleString()}</p>
+        <a href="#" class="add-cart-btn">Add to Cart</a>
+      </div>
+    `;
+    productsSection.appendChild(productCard);
+
+    // Add cart functionality for the new button
+    const addCartBtn = productCard.querySelector('.add-cart-btn');
+    addCartBtn.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      const alreadyInCart = cart.some(item => item.name === name && item.price === `UGX ${Number(price).toLocaleString()}`);
+      if (alreadyInCart) return;
+
+      cart.push({ name, price: `UGX ${Number(price).toLocaleString()}` });
+      renderCart();
+
+      addCartBtn.textContent = '✔ Added to Cart';
+      addCartBtn.disabled = true;
+      addCartBtn.style.background = '#aaa';
+      addCartBtn.style.cursor = 'not-allowed';
+    });
+
+    modal.style.display = "none";
+    form.reset();
+  };
+  if (imageFile) {
+    reader.readAsDataURL(imageFile);
+  } else {
+    alert("Please upload an image");
+  }
+});
+
+  </script>
+</body>
+</html>
